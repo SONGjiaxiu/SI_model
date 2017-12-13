@@ -6,6 +6,7 @@ import numpy as np
 import time
 import os
 import pandas as pd
+import random
 
 if __name__ == "__main__":
     
@@ -32,11 +33,23 @@ if __name__ == "__main__":
     print(event_data[:1])
     print(event_data[:1]["Source"])
     
-    for flight in event_data.iterrows():
-        for key in infected:
-             if int(flight["Source"]) == int(key):
-                 infected[flight["Destination"]] = flight["Endtime"]
+    test_events = event_data.head(100)
+    print(test_events)
+    
+    '''for index, flight in event_data.iterrows():
+        for key in infected.items():
+             if flight[:2] == key:
+                 infected[flight["Destination"]] = flight["Endtime"]'''
                     
+    for index, flight in test_events.iterrows():
+        for key in infected.items():
+            if flight["Source"] == key[0]:
+                random_n = random.random()
+                if random_n <= p_infection:
+                    infected[flight["Destination"]] = flight["EndTime"]
+                
+    print(infected)
+                
     
         
         
