@@ -60,10 +60,11 @@ if __name__ == "__main__":
     
     infected = {}
     infected[30] = 1229231100 # here you can change which airport(s) are infected in the beginnning and their infection times (now node 0 at the start of first flight)
+    infected_list =  [0, 4, 41, 100, 200]
     #print(infected)
     
     n = 279 # number of airports in the network
-    p_infection = 0.5 # here you can change the probability of infection
+    p_infection = 0.1 # here you can change the probability of infection
     p_list = [0.01, 0.05, 0.1, 0.5, 1.0]
     
     sources = event_data["Source"]
@@ -87,7 +88,7 @@ if __name__ == "__main__":
     #freq, bins = np.histogram(SI_model(test_events,p_infection,infected).values(), bins=np.linspace(min(event_data["StartTime"]),max(event_data["EndTime"]),10), range=[min(event_data["StartTime"]), max(event_data["EndTime"])], normed=False, weights=None)
     #freq = [float(x) / n for x in freq]
     
-    bins = np.linspace(min(event_data["StartTime"]),max(event_data["EndTime"]),num=50) # you can choose the number of bins by changing the scalar
+    '''bins = np.linspace(min(event_data["StartTime"]),max(event_data["EndTime"]),num=50) # you can choose the number of bins by changing the scalar
     iterations = 10 # you can choose the number of iterations to get the average from 
     event_range = [min(event_data["StartTime"]),max(event_data["EndTime"])]
     print(p_list[0])
@@ -116,24 +117,58 @@ if __name__ == "__main__":
     #plt.plot(x5,y5)
     plt.legend(['p=0.05'], loc="best")
     #plt.legend(['p=0.01', 'p=0.05','p=0.1','p=0.5','p=1'], loc="best")
-    plt.show()
+    plt.show()'''
 
     
-    #plot_prevalence(event_data,infected,n)
+   #task3
+   
+    infected_dict =  {}
+    n = 279 # number of airports in the network
+    p_infection = 0.1 # here you can change the probability of infection
+   
+   
+    bins = np.linspace(min(event_data["StartTime"]),max(event_data["EndTime"]),num=50) # you can choose the number of bins by changing the scalar
+    iterations = 10 # you can choose the number of iterations to get the average from 
+    event_range = [min(event_data["StartTime"]),max(event_data["EndTime"])]
     
-    '''for p in p_list:
-        infected_list = [[]] * 10
-        x = 0
-        while x < 10:
-            result = SI_model(test_events,p,infected)
-            infected_list[x] = result 
-            x+=1
-        print(infected_list) 
-        for dictionary in infected_list:
-            print(dictionary.values())'''
-                
-                
-        
+    infected_dict =  {}
+    infected_dict[0] = 1229231100
+    values1 = prevalence_average(event_data,infected_dict,n,p_infection,bins,iterations, event_range)
+    x1 = values1[0]
+    y1 = values1[1]
+    
+    infected_dict =  {}        
+    infected_dict[4] = 1229231100    
+    values2 = prevalence_average(event_data,infected_dict,n,p_infection,bins,iterations,event_range)
+    x2 = values2[0]
+    y2 = values2[1]
+    
+    infected_dict =  {}        
+    infected_dict[41] = 1229231100    
+    values3 = prevalence_average(event_data,infected_dict,n,p_infection,bins,iterations,event_range)
+    x3 = values3[0]
+    y3 = values3[1]
+    
+    infected_dict =  {}        
+    infected_dict[100] = 1229231100    
+    values4 = prevalence_average(event_data,infected_dict,n,p_infection,bins,iterations,event_range)
+    x4 = values4[0]
+    y4 = values4[1]
+    
+    infected_dict =  {}        
+    infected_dict[200] = 1229231100 
+    values5 = prevalence_average(event_data,infected_dict,n,p_infection,bins,iterations,event_range)
+    x5 = values5[0]
+    y5 = values5[1]
+    
+    
+    plt.plot(x1,y1)
+    plt.plot(x2,y2)
+    plt.plot(x3,y3)
+    plt.plot(x4,y4)
+    plt.plot(x5,y5)
+    plt.legend(['Infected node=0', 'Infected node=4','Infected node=41','Infected node=100','Infected node=200'], loc="best")
+    plt.show()
     
         
     
