@@ -9,6 +9,7 @@ import pandas as pd
 import random
 from collections import Counter
 from scipy import stats
+from si_animator import plot_network_usa
 
 
 def SI_model(event_data,p,infected):
@@ -62,7 +63,7 @@ def SI_model_task6(event_data,p,infected):
                 random_n = np.random.random()
                 if random_n <= p:
                     infected[flight["Destination"]] = flight["EndTime"]
-                    infected_infectant[flight["Destination"]] = flight["Source"]
+                    infected_infectant[unicode(flight["Destination"])] = unicode(flight["Source"])
                     infected_airports.append(flight["Destination"])
                     
     return infected_infectant
@@ -562,8 +563,9 @@ if __name__ == "__main__":
     #are used to infect yet uninfected airports
     
     p = 0.5
-    iterations = 10
-    
+    iterations = 20
+
+    #Assigning random starting nodes
     count = 0
     number_of_seeds = iterations # Change the number of immunized
     start_nodes = []
@@ -573,12 +575,37 @@ if __name__ == "__main__":
             count += 1
             start_nodes.append(random)
     
-    #network_path = 'C:/Users/kette/Complex networks/aggregated_US_air_traffic_network_undir.edg'
-    #network = nx.read_weighted_edgelist(network_path)
-    #print(network.edges())
+    #reading in the network
+    network_path = 'C:/Users/kette/Complex networks/aggregated_US_air_traffic_network_undir.edg'
+    network = nx.read_weighted_edgelist(network_path)
     
-    #infected = {}
-    #infected[start_nodes[0]] = 1229231100 
-    #print(SI_model_task6(event_data,p,infected))
-    print(infection_fractions(event_data,p,start_nodes,iterations)) #infection_fractions needs fixing
-    #the links exist now as dictionaries, we must be able to count the frequency of links which means that the link has to be counted without caring about the direction 
+    #Getting a dictionary with node xycoordinates 
+    xycoords = {}
+    for index, row in airport_data.iterrows():
+        xycoords[unicode(row["id"])] = [row["xcoordviz"], row["ycoordviz"]]
+        
+    
+    #Getting the edges and linewidths
+    infection_edges = infection_fractions(event_data,p,start_nodes,iterations) #infection_fractions needs fixing
+    edges = infection_edges.keys()
+    print(edges)
+    linewidths = []
+    count = 0
+    for i in infection_edges.values():
+        linewidths.append(float(i) / iterations)
+        count += 1
+        
+    #Plotting the network
+    plot_network_usa(network,xycoords,edges=edges,linewidths=linewidths)
+    plt.show()
+    
+    #Potting the maximum spanning tree
+    '''minimum_spanning_tree = nx.minimum_spanning_tree(network,weight="weight")
+    net_copy = network.copy()
+    for a,b,data in net_copy.edges(data=True):
+        data['weight'] = data['weight']*-1
+    maximum_spanning_tree = nx.minimum_spanning_tree(net_copy,weight="weight")
+    plot_network_usa(maximum_spanning_tree, xycoords)'''
+    
+    
+    #A lot of things in this task needs to be in unicode, thus the code is a bit messy
